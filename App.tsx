@@ -1,13 +1,18 @@
-import "@/styles/global.css";
 import { useCallback, useEffect, useState } from "react";
-import { Text } from "react-native";
+import { StatusBar, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { CurrencyCircleDollar, House } from "phosphor-react-native";
+
 import { Home } from "@/screens/home";
+import { Transactions } from "@/screens/transactions";
+
 import { initializeDatabase } from "@/services/prisma";
 
-const Stack = createNativeStackNavigator();
+import "@/styles/global.css";
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [databaseInitialized, setDatabaseInitialized] = useState(false);
@@ -36,9 +41,22 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="home" component={Home} />
-      </Stack.Navigator>
+      <StatusBar barStyle="dark-content" />
+      <Tab.Navigator
+        screenOptions={{ headerShown: false, tabBarActiveTintColor: "#121214" }}
+      >
+        <Tab.Screen
+          name="home"
+          component={Home}
+          options={{ tabBarIcon: House, title: "Início" }}
+        />
+
+        <Tab.Screen
+          name="transactions"
+          component={Transactions}
+          options={{ tabBarIcon: CurrencyCircleDollar, title: "Transações" }}
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
