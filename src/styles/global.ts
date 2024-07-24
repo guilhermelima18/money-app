@@ -9,5 +9,5 @@ export const ContainerLoading = styled.View`
 export const ContainerApp = styled.View`
   flex: 1;
   flex-direction: column;
-  padding-top: 80;
+  padding-top: 80px;
 `;
