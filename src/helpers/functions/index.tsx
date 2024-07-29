@@ -1,8 +1,5 @@
-const formatCurrency = (value: string) => {
-  const cleanedValue = value.replace(/\D/g, "");
-  const numberValue = Number(cleanedValue) / 100;
-
-  const formattedValue = numberValue.toLocaleString("pt-BR", {
+const formatCurrency = (value: number) => {
+  const formattedValue = value.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
   });

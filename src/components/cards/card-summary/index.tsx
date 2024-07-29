@@ -1,12 +1,12 @@
 import { ArrowCircleDown, ArrowCircleUp } from "phosphor-react-native";
-import * as S from "./styles";
 import { theme } from "@/theme";
 import { formatCurrency } from "@/helpers/functions";
+import * as S from "./styles";
 
 type CardSummaryProps = {
   type: "entrada" | "saida";
   typeTitle: string;
-  amount: string;
+  amount: number;
   date: string;
 };
 
