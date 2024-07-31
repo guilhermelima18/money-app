@@ -1,13 +1,15 @@
-import { useEffect, useMemo } from "react";
-import { Link } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
+import { Money, PlusCircle } from "phosphor-react-native";
 import { useTransactions } from "@/hooks/use-transaction";
+import { ModalNewTransaction } from "@/components/modal/modal-new-transaction";
 import { CardSummary } from "@/components/cards/card-summary";
 import { Button } from "@/components/button";
 import * as S from "./styles";
 
 export default function Home() {
-  const { transactions, getTransactions, createTransaction } =
-    useTransactions();
+  const [showModal, setShowModal] = useState(false);
+
+  const { transactions, getTransactions } = useTransactions();
 
   const incomingTransactions = useMemo(() => {
     let result;
@@ -39,14 +41,31 @@ export default function Home() {
     return result || 0;
   }, [transactions]);
 
+  function handleOpenOrCloseModalNewTransaction() {
+    setShowModal(!showModal);
+  }
+
   useEffect(() => {
     getTransactions();
   }, []);
 
   return (
     <S.Container>
-      <S.Title>Money App</S.Title>
-      <S.Text>Gerencie suas finanças aqui!</S.Text>
+      <S.HeaderContainer>
+        <S.LogoContainer>
+          <Money size={32} />
+          <S.Text>Money APP</S.Text>
+        </S.LogoContainer>
+
+        <S.ContainerButton>
+          <Button
+            variant="solid"
+            text="Nova transação"
+            icon={<PlusCircle size={24} color="white" />}
+            onPress={handleOpenOrCloseModalNewTransaction}
+          />
+        </S.ContainerButton>
+      </S.HeaderContainer>
 
       <S.ContainerCards>
         <CardSummary
@@ -64,11 +83,10 @@ export default function Home() {
         />
       </S.ContainerCards>
 
-      <S.ContainerButton>
-        <Link href="/transactions" asChild>
-          <Button variant="solid" text="Transações" />
-        </Link>
-      </S.ContainerButton>
+      <ModalNewTransaction
+        showModal={showModal}
+        onClose={handleOpenOrCloseModalNewTransaction}
+      />
     </S.Container>
   );
 }

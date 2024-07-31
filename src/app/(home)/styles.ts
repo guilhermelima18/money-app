@@ -7,23 +7,32 @@ export const Container = styled.View`
   padding: 10px;
 `;
 
-export const Title = styled.Text`
-  font-size: ${theme.FONT_SIZE.XXL}px;
-  font-family: ${theme.FONT_FAMILY.BOLD};
+export const HeaderContainer = styled.View`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 88px;
+`;
+
+export const LogoContainer = styled.View`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 `;
 
 export const Text = styled.Text`
-  font-size: ${theme.FONT_SIZE.XL}px;
+  font-size: ${theme.FONT_SIZE.MD}px;
   font-family: ${theme.FONT_FAMILY.REGULAR};
-  margin-top: 10px;
 `;
 
 export const ContainerCards = styled.View`
   flex-direction: column;
-  margin-top: 50px;
+  margin-top: 30px;
   gap: 20px;
 `;
 
 export const ContainerButton = styled.View`
-  margin-top: 20px;
+  width: 150px;
 `;

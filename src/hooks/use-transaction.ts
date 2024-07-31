@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
 
-type Transactions = {
+type Transaction = {
   id: number;
   nome: string;
   tipo: string;
@@ -11,7 +11,7 @@ type Transactions = {
 };
 
 export function useTransactions() {
-  const [transactions, setTransactions] = useState<Transactions[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const database = useSQLiteContext();
 
@@ -19,7 +19,7 @@ export function useTransactions() {
     const query = "SELECT * FROM transacoes";
 
     try {
-      const result: Transactions[] = await database.getAllAsync(query);
+      const result: Transaction[] = await database.getAllAsync(query);
 
       if (result?.length) {
         setTransactions(result);
@@ -30,7 +30,7 @@ export function useTransactions() {
   }, []);
 
   const createTransaction = useCallback(
-    async (data: Omit<Transactions, "id">) => {
+    async (data: Omit<Transaction, "id">) => {
       const statement = await database.prepareAsync(
         `INSERT INTO transacoes (nome, tipo, valor, data_criacao, id_categoria)
       VALUES ($nome, $tipo, $valor, $data_criacao, $id_categoria)`

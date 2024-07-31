@@ -7,4 +7,16 @@ const formatCurrency = (value: number) => {
   return formattedValue;
 };
 
-export { formatCurrency };
+const formatStringCurrency = (value: string) => {
+  if (!value) return;
+  const cleanedValue = value?.replace(/\D/g, "");
+  const numberValue = Number(cleanedValue) / 100;
+
+  const formattedValue = numberValue.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+
+  return formattedValue;
+};
+export { formatCurrency, formatStringCurrency };

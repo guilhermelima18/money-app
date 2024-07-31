@@ -2,10 +2,13 @@ import { theme } from "@/theme";
 import styled from "styled-components/native";
 
 export const ButtonBase = styled.TouchableOpacity`
-  width: 320px;
+  width: 100%;
   padding: 15px;
+  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: 5px;
   border-radius: 5px;
 `;
 

@@ -1,25 +1,31 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
 
-type Categories = {
+type Category = {
   id: number;
   nome: string;
 };
 
 export function useCategories() {
+  const [categories, setCategories] = useState<Category[]>([]);
+
   const database = useSQLiteContext();
 
   const getCategories = useCallback(async () => {
     const query = "SELECT * FROM categorias";
 
     try {
-      const result = await database.getAllAsync(query);
+      const result: Category[] = await database.getAllAsync(query);
+
+      if (result?.length) {
+        setCategories(result);
+      }
     } catch (error) {
       console.log("Não foi possível buscar as categorias.");
     }
   }, []);
 
-  const createCategory = useCallback(async (data: Omit<Categories, "id">) => {
+  const createCategory = useCallback(async (data: Omit<Category, "id">) => {
     const statement = await database.prepareAsync(
       "INSERT INTO categorias (nome) VALUES ($nome)"
     );
@@ -33,5 +39,5 @@ export function useCategories() {
     }
   }, []);
 
-  return { getCategories, createCategory };
+  return { categories, getCategories, createCategory };
 }
