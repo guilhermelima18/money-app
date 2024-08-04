@@ -1,8 +1,14 @@
-import { useCallback, useState } from "react";
-import { useSQLiteContext } from "expo-sqlite";
+import { SQLiteExecuteAsyncResult, useSQLiteContext } from "expo-sqlite";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 type Transaction = {
-  id: number;
+  id?: number;
   nome: string;
   tipo: string;
   valor: number;
@@ -10,7 +16,21 @@ type Transaction = {
   id_categoria: number;
 };
 
-export function useTransactions() {
+type TransactionProviderProps = {
+  children: ReactNode;
+};
+
+type TransactionContextProps = {
+  transactions: Transaction[];
+  getTransactions: () => Promise<void>;
+  createTransaction: (
+    data: Omit<Transaction, "id">
+  ) => Promise<SQLiteExecuteAsyncResult<unknown> | undefined>;
+};
+
+export const TransactionContext = createContext({} as TransactionContextProps);
+
+export function TransactionProvider({ children }: TransactionProviderProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const database = useSQLiteContext();
@@ -44,6 +64,8 @@ export function useTransactions() {
           $data_criacao: data.data_criacao,
           $id_categoria: data.id_categoria,
         });
+
+        return result;
       } catch (error) {
         console.log("Não foi possível cadastrar", error);
       }
@@ -51,5 +73,13 @@ export function useTransactions() {
     []
   );
 
-  return { transactions, getTransactions, createTransaction };
+  return (
+    <TransactionContext.Provider
+      value={{ transactions, getTransactions, createTransaction }}
+    >
+      {children}
+    </TransactionContext.Provider>
+  );
 }
+
+export const useTransaction = () => useContext(TransactionContext);

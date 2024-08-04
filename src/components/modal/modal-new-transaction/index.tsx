@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Text, Alert } from "react-native";
 import Modal from "react-native-modal";
 import RNPickerSelect from "react-native-picker-select";
 import { useForm, Controller } from "react-hook-form";
@@ -11,7 +11,8 @@ import {
   CaretCircleDown,
   X,
 } from "phosphor-react-native";
-import { useCategories } from "@/hooks/use-categories";
+import { useTransaction } from "@/contexts/transaction";
+import { useCategory } from "@/contexts/category";
 import { theme } from "@/theme";
 import { formatStringCurrency } from "@/helpers/functions";
 import { Button } from "@/components/button";
@@ -30,30 +31,57 @@ type ModalNewTransactionProps = {
   onClose: () => void;
 };
 
+type TransactionType = "ENTRADA" | "SAIDA" | "NENHUM";
+
 export function ModalNewTransaction({
   showModal,
   onClose,
 }: ModalNewTransactionProps) {
-  const [transactionType, setTransactionType] = useState<"ENTRADA" | "SAIDA">();
+  const [transactionType, setTransactionType] =
+    useState<TransactionType>("NENHUM");
 
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<NewTransactionSchemaType>({
     resolver: zodResolver(newTransactionSchema),
   });
 
-  const { categories, getCategories } = useCategories();
+  const { getTransactions, createTransaction } = useTransaction();
+  const { categories, getCategories } = useCategory();
 
   async function handleCreateTransaction(data: NewTransactionSchemaType) {
-    const valor = formatStringCurrency(data.amount);
-    const formatValue = valor?.replace(/^R\$\s?/, "");
+    if (transactionType === "NENHUM") {
+      return Alert.alert("Atenção", "O tipo de transação não foi selecionado.");
+    }
 
-    console.log({
-      ...data,
-      amount: formatValue,
+    const valor = formatStringCurrency(data.amount);
+    const formatValue = valor
+      ?.replace(/R\$|\./g, "")
+      ?.replace(",", ".")
+      ?.trim();
+
+    const result = await createTransaction({
+      nome: data?.description,
+      tipo: transactionType as TransactionType,
+      valor: Number(formatValue),
+      data_criacao: new Date().toLocaleDateString(),
+      id_categoria: data?.category,
     });
+
+    if (result) {
+      await getTransactions();
+
+      setValue("description", "");
+      setValue("amount", "");
+      setValue("category", 0);
+
+      setTransactionType("NENHUM");
+
+      onClose();
+    }
   }
 
   const categoriesList = useMemo(() => {
@@ -73,8 +101,6 @@ export function ModalNewTransaction({
   useEffect(() => {
     getCategories();
   }, []);
-
-  console.log(categories);
 
   return (
     <View style={{ flex: 1 }}>

@@ -7,24 +7,16 @@ export const Container = styled.View`
   padding: 10px;
 `;
 
-export const HeaderContainer = styled.View`
-  width: 100%;
+export const LogoContainer = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 88px;
+  gap: 10px;
 `;
 
-export const LogoContainer = styled.View`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-`;
-
-export const Text = styled.Text`
-  font-size: ${theme.FONT_SIZE.MD}px;
-  font-family: ${theme.FONT_FAMILY.REGULAR};
+export const Title = styled.Text`
+  font-size: ${theme.FONT_SIZE.XL}px;
+  font-family: ${theme.FONT_FAMILY.BOLD};
 `;
 
 export const ContainerCards = styled.View`
@@ -34,5 +26,6 @@ export const ContainerCards = styled.View`
 `;
 
 export const ContainerButton = styled.View`
-  width: 150px;
+  width: 320px;
+  margin: 20px auto 0 auto;
 `;

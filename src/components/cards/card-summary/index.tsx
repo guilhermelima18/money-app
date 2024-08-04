@@ -1,6 +1,6 @@
 import { ArrowCircleDown, ArrowCircleUp } from "phosphor-react-native";
 import { theme } from "@/theme";
-import { formatCurrency } from "@/helpers/functions";
+import { formatCurrency, formatStringDate } from "@/helpers/functions";
 import * as S from "./styles";
 
 type CardSummaryProps = {
@@ -28,7 +28,7 @@ export function CardSummary({
       </S.TypeSummaryContainer>
 
       <S.Amount>{formatCurrency(amount)}</S.Amount>
-      <S.Date>Última entrada em {date}</S.Date>
+      <S.Date>Última entrada em {formatStringDate(date)}</S.Date>
     </S.Container>
   );
 }

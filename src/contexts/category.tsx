@@ -1,4 +1,10 @@
-import { useCallback, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 import { useSQLiteContext } from "expo-sqlite";
 
 type Category = {
@@ -6,7 +12,19 @@ type Category = {
   nome: string;
 };
 
-export function useCategories() {
+type CategoryProviderProps = {
+  children: ReactNode;
+};
+
+type CategoryContextProps = {
+  categories: Category[];
+  getCategories: () => Promise<void>;
+  createCategory: (data: Omit<Category, "id">) => Promise<void>;
+};
+
+export const CategoryContext = createContext({} as CategoryContextProps);
+
+export function CategoryProvider({ children }: CategoryProviderProps) {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const database = useSQLiteContext();
@@ -39,5 +57,13 @@ export function useCategories() {
     }
   }, []);
 
-  return { categories, getCategories, createCategory };
+  return (
+    <CategoryContext.Provider
+      value={{ categories, getCategories, createCategory }}
+    >
+      {children}
+    </CategoryContext.Provider>
+  );
 }
+
+export const useCategory = () => useContext(CategoryContext);
